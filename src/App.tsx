@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar.tsx";
 import { ScrollProgress } from "@/components/layout/ScrollProgress.tsx";
+import { Hero } from "@/sections/Hero.tsx";
 import { useThemeStore } from "@/store/theme.ts";
 
 export default function App() {
@@ -15,9 +16,7 @@ export default function App() {
       <ScrollProgress />
       <Navbar />
       <main className="pt-20">
-        <p style={{ padding: "2rem", color: "hsl(var(--muted-foreground))" }}>
-          Sections coming soon…
-        </p>
+        <Hero />
       </main>
     </>
   );
