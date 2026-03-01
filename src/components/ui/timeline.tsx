@@ -27,9 +27,11 @@ export function Timeline({ data, className }: TimelineProps) {
     return () => observer.disconnect();
   }, []);
 
+  // Start filling as the section enters view, finish when you've scrolled
+  // through 80% of it — keeps the fill in sync with your reading position.
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 10%", "end 50%"],
+    offset: ["start 20%", "end 80%"],
   });
 
   const fillHeight = useTransform(
@@ -40,21 +42,22 @@ export function Timeline({ data, className }: TimelineProps) {
 
   return (
     <div ref={containerRef} className={cn("relative w-full", className)}>
-      {/* Animated fill line */}
+      {/* ── Vertical track + animated fill ── */}
+      {/* The track lives in a 2-rem wide left column; entries share that grid */}
       <div
-        className="absolute left-8 top-0 w-[2px] overflow-hidden"
+        className="absolute left-[0.9375rem] top-0 w-[2px] overflow-hidden"
         style={{ height: `${containerHeight}px` }}
         aria-hidden="true"
       >
-        {/* Track */}
+        {/* Muted track */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, transparent, hsl(var(--border)), transparent)",
+              "linear-gradient(to bottom, transparent 0%, hsl(var(--border)) 10%, hsl(var(--border)) 90%, transparent 100%)",
           }}
         />
-        {/* Fill */}
+        {/* Coloured fill */}
         <motion.div
           className="absolute top-0 left-0 w-full"
           style={{
@@ -64,8 +67,8 @@ export function Timeline({ data, className }: TimelineProps) {
         />
       </div>
 
-      {/* Entries */}
-      <div className="flex flex-col gap-16 pl-20">
+      {/* ── Entries ── */}
+      <div className="flex flex-col gap-14">
         {data.map((entry, i) => (
           <TimelineItem key={`${entry.title}-${i}`} entry={entry} />
         ))}
@@ -78,25 +81,35 @@ function TimelineItem({ entry }: { entry: TimelineEntry }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 80%", "start 40%"],
+    offset: ["start 90%", "start 50%"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]);
-  const x = useTransform(scrollYProgress, [0, 1], [-16, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.25, 1]);
+  const x = useTransform(scrollYProgress, [0, 1], [-12, 0]);
 
   return (
-    <motion.div ref={ref} style={{ opacity, x }} className="relative">
-      {/* Dot */}
+    <motion.div
+      ref={ref}
+      style={{ opacity, x }}
+      // grid: [dot column 30px] [content]
+      className="grid grid-cols-[1.875rem_1fr] items-start gap-x-4"
+    >
+      {/* ── Dot (centred in the 30px column, aligned with the first text line) ── */}
       <div
-        className="absolute -left-[3.25rem] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-indigo-500 bg-white dark:bg-black"
+        className="flex items-center justify-center pt-0.5"
         aria-hidden="true"
       >
-        <div className="h-2 w-2 rounded-full bg-indigo-500" />
+        <div className="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 border-indigo-500 bg-white dark:bg-black">
+          <div className="h-2 w-2 rounded-full bg-indigo-500" />
+        </div>
       </div>
 
-      <div className="text-sm font-semibold text-indigo-500 dark:text-indigo-400 mb-1">
-        {entry.title}
+      {/* ── Date + card ── */}
+      <div>
+        <p className="text-sm font-semibold text-indigo-500 dark:text-indigo-400 mb-2 leading-none">
+          {entry.title}
+        </p>
+        <div>{entry.content}</div>
       </div>
-      <div>{entry.content}</div>
     </motion.div>
   );
 }
