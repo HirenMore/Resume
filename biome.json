@@ -13,7 +13,7 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "error"
       }
     }
   },
@@ -29,6 +29,12 @@
     }
   },
   "files": {
-    "includes": ["**", "!!**/node_modules", "!!**/dist", "!!bun.lock", "!!bun.lockb"]
+    "includes": [
+      "**",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!bun.lock",
+      "!!bun.lockb"
+    ]
   }
 }
