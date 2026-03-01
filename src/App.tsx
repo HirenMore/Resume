@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar.tsx";
 import { ScrollProgress } from "@/components/layout/ScrollProgress.tsx";
 import { About } from "@/sections/About.tsx";
+import { Experience } from "@/sections/Experience.tsx";
 import { Hero } from "@/sections/Hero.tsx";
 import { Skills } from "@/sections/Skills.tsx";
 import { useThemeStore } from "@/store/theme.ts";
@@ -21,6 +22,7 @@ export default function App() {
         <Hero />
         <About />
         <Skills />
+        <Experience />
       </main>
     </>
   );
