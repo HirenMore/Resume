@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import { Footer } from "@/components/layout/Footer.tsx";
 import { Navbar } from "@/components/layout/Navbar.tsx";
 import { ScrollProgress } from "@/components/layout/ScrollProgress.tsx";
 import { About } from "@/sections/About.tsx";
+import { Contact } from "@/sections/Contact.tsx";
 import { Experience } from "@/sections/Experience.tsx";
 import { Hero } from "@/sections/Hero.tsx";
 import { Projects } from "@/sections/Projects.tsx";
@@ -25,7 +27,9 @@ export default function App() {
         <Skills />
         <Experience />
         <Projects />
+        <Contact />
       </main>
+      <Footer />
     </>
   );
 }
