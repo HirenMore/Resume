@@ -1,6 +1,6 @@
 import { motion, type Variants } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
-import { CanvasText } from "@/components/ui/canvas-text.tsx";
+import { GlowingEffect } from "@/components/ui/glowing-effect.tsx";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight.tsx";
 import { resumeData } from "@/data/index.ts";
 
@@ -24,6 +24,7 @@ export function Hero() {
     <HeroHighlight
       containerClassName="min-h-[90vh] px-6 md:px-24 lg:px-40 justify-start pt-32"
       className="w-full"
+      enableDotGrid={false}
     >
       <section id="hero">
         <motion.div
@@ -43,20 +44,11 @@ export function Hero() {
             variants={item}
             className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4"
           >
-            <CanvasText
-              text={personal.name}
-              backgroundClassName="bg-white dark:bg-black"
-              colors={[
-                "rgba(139, 92, 246, 1)",
-                "rgba(167, 139, 250, 0.9)",
-                "rgba(109, 40, 217, 0.85)",
-                "rgba(196, 181, 253, 0.75)",
-                "rgba(124, 58, 237, 0.7)",
-                "rgba(216, 180, 254, 0.6)",
-              ]}
-              lineGap={4}
-              animationDuration={20}
-            />
+            {/* GlowingEffect wrapper — relative+rounded container required */}
+            <span className="relative inline-block rounded-xl px-2 py-1">
+              <GlowingEffect spread={40} proximity={80} borderWidth={2} />
+              {personal.name}
+            </span>
           </motion.h1>
 
           <motion.h2

@@ -23,12 +23,14 @@ interface HeroHighlightProps {
   children: React.ReactNode;
   className?: string;
   containerClassName?: string;
+  enableDotGrid?: boolean;
 }
 
 export function HeroHighlight({
   children,
   className,
   containerClassName,
+  enableDotGrid = false,
 }: HeroHighlightProps) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -51,38 +53,42 @@ export function HeroHighlight({
         "group relative flex w-full items-center justify-center bg-white dark:bg-black",
         containerClassName
       )}
-      onMouseMove={handleMouseMove}
+      onMouseMove={enableDotGrid ? handleMouseMove : undefined}
       role="presentation"
       aria-hidden="true"
     >
-      {/* Static dot grid — light */}
-      <div
-        className="pointer-events-none absolute inset-0 dark:hidden"
-        style={{ backgroundImage: DOT_PATTERNS.light.default }}
-      />
-      {/* Static dot grid — dark */}
-      <div
-        className="pointer-events-none absolute inset-0 hidden dark:block"
-        style={{ backgroundImage: DOT_PATTERNS.dark.default }}
-      />
-      {/* Hover radial reveal — light */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 dark:hidden"
-        style={{
-          backgroundImage: DOT_PATTERNS.light.hover,
-          WebkitMaskImage: maskImage,
-          maskImage,
-        }}
-      />
-      {/* Hover radial reveal — dark */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 hidden opacity-0 transition duration-300 group-hover:opacity-100 dark:block"
-        style={{
-          backgroundImage: DOT_PATTERNS.dark.hover,
-          WebkitMaskImage: maskImage,
-          maskImage,
-        }}
-      />
+      {enableDotGrid && (
+        <>
+          {/* Static dot grid — light */}
+          <div
+            className="pointer-events-none absolute inset-0 dark:hidden"
+            style={{ backgroundImage: DOT_PATTERNS.light.default }}
+          />
+          {/* Static dot grid — dark */}
+          <div
+            className="pointer-events-none absolute inset-0 hidden dark:block"
+            style={{ backgroundImage: DOT_PATTERNS.dark.default }}
+          />
+          {/* Hover radial reveal — light */}
+          <motion.div
+            className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 dark:hidden"
+            style={{
+              backgroundImage: DOT_PATTERNS.light.hover,
+              WebkitMaskImage: maskImage,
+              maskImage,
+            }}
+          />
+          {/* Hover radial reveal — dark */}
+          <motion.div
+            className="pointer-events-none absolute inset-0 hidden opacity-0 transition duration-300 group-hover:opacity-100 dark:block"
+            style={{
+              backgroundImage: DOT_PATTERNS.dark.hover,
+              WebkitMaskImage: maskImage,
+              maskImage,
+            }}
+          />
+        </>
+      )}
 
       <div className={cn("relative z-20", className)}>{children}</div>
     </div>
