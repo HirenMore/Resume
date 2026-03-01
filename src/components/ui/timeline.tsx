@@ -12,6 +12,12 @@ interface TimelineProps {
   className?: string;
 }
 
+// Layout constants (keep in sync with Tailwind classes below)
+// Date column: 9rem (144px) | Line column: 2rem (32px) | Content: 1fr
+// Track centre = 144 + 16 = 160px from left edge of container = left-40
+const DATE_COL = "w-36"; // 9rem
+const LINE_COL = "w-8"; // 2rem — dot + track live here
+
 export function Timeline({ data, className }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
@@ -27,8 +33,6 @@ export function Timeline({ data, className }: TimelineProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Start filling as the section enters view, finish when you've scrolled
-  // through 80% of it — keeps the fill in sync with your reading position.
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 20%", "end 80%"],
@@ -42,22 +46,20 @@ export function Timeline({ data, className }: TimelineProps) {
 
   return (
     <div ref={containerRef} className={cn("relative w-full", className)}>
-      {/* ── Vertical track + animated fill ── */}
-      {/* The track lives in a 2-rem wide left column; entries share that grid */}
+      {/* ── Vertical track: centred in the 2rem line column ──
+          date col (9rem) + half of line col (1rem) = 10rem = left-40  */}
       <div
-        className="absolute left-[0.9375rem] top-0 w-[2px] overflow-hidden"
+        className="absolute left-40 top-0 w-[2px] -translate-x-1/2 overflow-hidden"
         style={{ height: `${containerHeight}px` }}
         aria-hidden="true"
       >
-        {/* Muted track */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, hsl(var(--border)) 10%, hsl(var(--border)) 90%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, hsl(var(--border)) 8%, hsl(var(--border)) 92%, transparent 100%)",
           }}
         />
-        {/* Coloured fill */}
         <motion.div
           className="absolute top-0 left-0 w-full"
           style={{
@@ -68,7 +70,7 @@ export function Timeline({ data, className }: TimelineProps) {
       </div>
 
       {/* ── Entries ── */}
-      <div className="flex flex-col gap-14">
+      <div className="flex flex-col gap-12">
         {data.map((entry, i) => (
           <TimelineItem key={`${entry.title}-${i}`} entry={entry} />
         ))}
@@ -83,33 +85,35 @@ function TimelineItem({ entry }: { entry: TimelineEntry }) {
     target: ref,
     offset: ["start 90%", "start 50%"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 1], [0.25, 1]);
-  const x = useTransform(scrollYProgress, [0, 1], [-12, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.2, 1]);
+  const y = useTransform(scrollYProgress, [0, 1], [12, 0]);
 
   return (
     <motion.div
       ref={ref}
-      style={{ opacity, x }}
-      // grid: [dot column 30px] [content]
-      className="grid grid-cols-[1.875rem_1fr] items-start gap-x-4"
+      style={{ opacity, y }}
+      // 3-col grid: [date 9rem] [line 2rem] [content 1fr]
+      className="grid grid-cols-[9rem_2rem_1fr] items-start"
     >
-      {/* ── Dot (centred in the 30px column, aligned with the first text line) ── */}
+      {/* ── Date: right-aligned so it reads flush against the line ── */}
+      <div className={cn("pr-4 pt-1 text-right", DATE_COL)}>
+        <span className="text-sm font-semibold leading-snug text-indigo-500 dark:text-indigo-400">
+          {entry.title}
+        </span>
+      </div>
+
+      {/* ── Dot: centred in the 2rem column, aligned with the date text ── */}
       <div
-        className="flex items-center justify-center pt-0.5"
+        className={cn("flex justify-center pt-1", LINE_COL)}
         aria-hidden="true"
       >
-        <div className="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 border-indigo-500 bg-white dark:bg-black">
+        <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-indigo-500 bg-white dark:bg-black">
           <div className="h-2 w-2 rounded-full bg-indigo-500" />
         </div>
       </div>
 
-      {/* ── Date + card ── */}
-      <div>
-        <p className="text-sm font-semibold text-indigo-500 dark:text-indigo-400 mb-2 leading-none">
-          {entry.title}
-        </p>
-        <div>{entry.content}</div>
-      </div>
+      {/* ── Content card ── */}
+      <div className="pl-4 pb-2">{entry.content}</div>
     </motion.div>
   );
 }

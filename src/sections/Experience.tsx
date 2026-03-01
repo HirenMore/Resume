@@ -87,7 +87,7 @@ export function Experience() {
   return (
     <section id="experience" className="py-24 px-6 md:px-24 lg:px-40">
       <SectionTitle number="03" title="Work Experience" />
-      <Timeline data={entries} className="max-w-3xl" />
+      <Timeline data={entries} />
     </section>
   );
 }
