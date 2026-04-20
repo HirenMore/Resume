@@ -7,7 +7,7 @@ export const resumeData: ResumeData = {
     tagline:
       "6+ years building scalable web applications with .NET Core, React & Angular. Turning complex problems into clean, performant solutions.",
     location: "Navsari, India",
-    email: "hirenmore26@gmail.com",
+    email: "hirenmore256@gmail.com",
     github: "https://github.com/HirenMore",
     linkedin: "https://linkedin.com/in/hiren-more",
     yearsOfExperience: 6,
